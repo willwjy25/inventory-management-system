@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TransactionType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Role {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  users User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  isActive Boolean @default(true)
+
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  transactions  InventoryTransaction[]
+  refreshTokens RefreshToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id      String  @id @default(uuid())
+  name    String @unique
+  email   String?
+  phone   String?
+  address String?
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id String @id @default(uuid())
+
+  sku         String  @unique
+  name        String
+  description String?
+  imageUrl    String?
+
+  costPrice    Decimal @db.Decimal(12,2)
+  sellingPrice Decimal @db.Decimal(12,2)
+
+  currentStock Int  @default(0)
+  minimumStock Int  @default(0)
+  maximumStock Int?
+
+  status ProductStatus @default(ACTIVE)
+
+  categoryId String
+  supplierId String
+
+  category     Category               @relation(fields: [categoryId], references: [id])
+  supplier     Supplier               @relation(fields: [supplierId], references: [id])
+  transactions InventoryTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model InventoryTransaction {
+  id String @id @default(uuid())
+
+  type     TransactionType
+  quantity Int
+  note     String?
+
+  productId String
+  userId    String
+
+  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model RefreshToken {
+  id String @id @default(uuid())
+
+  token     String   @unique
+  expiresAt DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
