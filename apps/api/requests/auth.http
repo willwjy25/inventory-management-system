@@ -1,0 +1,48 @@
+### =========================================
+### Register
+### =========================================
+
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "name": "William",
+  "email": "william@example.com",
+  "password": "password123"
+}
+
+### =========================================
+### Login
+### =========================================
+
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "william@example.com",
+  "password": "password123"
+}
+
+### =========================================
+### Login - Wrong Password
+### =========================================
+
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "william@example.com",
+  "password": "wrongpassword"
+}
+
+### =========================================
+### Login - User Not Found
+### =========================================
+
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "notfound@example.com",
+  "password": "password123"
+}
