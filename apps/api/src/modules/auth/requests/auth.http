@@ -1,0 +1,70 @@
+# @env = local
+# @host = {{host}}
+@host = http://localhost:5000
+
+
+
+### =========================================
+### Register
+### =========================================
+POST {{host}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "William",
+  "email": "william2@example.com",
+  "password": "password123"
+}
+
+
+### =========================================
+### Login
+### =========================================
+
+# @name login
+
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "william2@example.com",
+  "password": "password123"
+}
+
+### =========================================
+### Refresh Token
+### =========================================
+
+# @name refresh
+POST {{host}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{login.response.body.data.refreshToken}}"
+}
+
+### =========================================
+### Logout
+### "refreshToken": "{{refresh.response.body.data.refreshToken}}"
+### "refreshToken": "{{login.response.body.data.refreshToken}}"
+### =========================================
+
+POST {{host}}/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh.response.body.data.refreshToken}}"
+}
+
+### =========================================
+### Logout
+### "refreshToken": "{{refresh.response.body.data.refreshToken}}"
+### "refreshToken": "{{login.response.body.data.refreshToken}}"
+### =========================================
+
+POST {{host}}/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "{{login.response.body.data.refreshToken}}"
+}

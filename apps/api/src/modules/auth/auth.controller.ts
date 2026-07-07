@@ -6,6 +6,8 @@ import { successResponse } from "../../common/response";
 import {
   registerSchema,
   loginSchema,
+  refreshTokenSchema,
+  logoutSchema,
 } from "./auth.validation";
 
 import * as authService from "./auth.service";
@@ -38,3 +40,29 @@ export const loginController = asyncHandler(
     );
   }
 );
+
+export const refreshController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const data = refreshTokenSchema.parse(req.body);
+
+    const result = await authService.refresh(data);
+
+    return successResponse(
+      res,
+      "Token refreshed successfully.",
+      result
+    );
+  }
+);
+
+export const logoutController = asyncHandler(async (req, res) => {
+  const data = logoutSchema.parse(req.body);
+
+  await authService.logout(data);
+
+  return successResponse(
+    res,
+    "Logout successful.",
+    null
+  );
+});

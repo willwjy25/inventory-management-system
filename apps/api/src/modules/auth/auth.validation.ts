@@ -30,3 +30,17 @@ export const loginSchema = z.object({
 });
 
 export type LoginDto = z.infer<typeof loginSchema>;
+
+export const refreshTokenSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
+export type RefreshTokenDto = z.infer<
+  typeof refreshTokenSchema
+>;
+
+export const logoutSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
+export type LogoutDto = z.infer<typeof logoutSchema>;
